@@ -66,7 +66,13 @@ class Preferences:
     def most_preferred(self, item_list):
         """Returns the most preferred item from a list.
         """
-        # To be completed
+        best_score = -100
+        best_item = None
+        for item in item_list:
+            if item.get_score() >= best_score:
+                best_score = item.get_score()
+                best_item = item
+
         return best_item
 
     def is_item_among_top_10_percent(self, item, item_list):
@@ -76,6 +82,10 @@ class Preferences:
         :return: a boolean, True means that the item is among the favourite ones
         """
         # To be completed
+        sorted_item_list = sorted(item_list, key=lambda x : x.get_score(), reverse=True)
+        limit = max(int(0.1*len(item_list)),1)
+        is_top_item = (item in sorted_item_list[:limit])
+
         return is_top_item
 
 
