@@ -69,8 +69,8 @@ class Preferences:
         best_score = -100
         best_item = None
         for item in item_list:
-            if item.get_score() >= best_score:
-                best_score = item.get_score()
+            if item.get_score(self) >= best_score:
+                best_score = item.get_score(self)
                 best_item = item
 
         return best_item
@@ -82,7 +82,7 @@ class Preferences:
         :return: a boolean, True means that the item is among the favourite ones
         """
         # To be completed
-        sorted_item_list = sorted(item_list, key=lambda x : x.get_score(), reverse=True)
+        sorted_item_list = sorted(item_list, key=lambda x : x.get_score(self), reverse=True)
         limit = max(int(0.1*len(item_list)),1)
         is_top_item = (item in sorted_item_list[:limit])
 
@@ -131,3 +131,4 @@ if __name__ == '__main__':
     print('Electric Engine (for agent 1) = {}'.format(electric_engine.get_score(agent_pref)))
     print('Diesel Engine (for agent 1) = {}'.format(diesel_engine.get_score(agent_pref)))
     print('Most preferred item is : {}'.format(agent_pref.most_preferred([diesel_engine, electric_engine]).get_name()))
+    print('In 10percent test : {}'.format(agent_pref.is_item_among_top_10_percent(electric_engine, [diesel_engine, electric_engine])))
