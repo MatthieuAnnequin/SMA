@@ -27,6 +27,7 @@ class MotorAgent(CommunicatingAgent):
         super().__init__(unique_id, model, name)
 
         self.__preferences = Preferences()
+        
 
         # Initialize citerion preferences
         random.shuffle(criterion_list)
@@ -46,7 +47,12 @@ class MotorAgent(CommunicatingAgent):
         """ The step methods of the agent called by the scheduler at each time tick.
         """
         super().step()  
+        print('test')
+        if len(self.get_new_messages()) == 0 and self.get_name() != "agent2":
+            self.send_message(Message(self.get_name(),"agent2",MessagePerformative.PROPOSE, "Bonjour"))
+            print('sent')
         for message in self.get_new_messages():
+            print(str(message))
             if message.get_performative() == MessagePerformative.PROPOSE:
                 self.send_message(Message(message.get_dest(),message.get_exp(),MessagePerformative.PROPOSE, "Bonjour"))
             else:
@@ -101,3 +107,8 @@ if __name__ == "__main__":
     motormodel.schedule.add(agent1)
     motormodel.schedule.add(agent2)
     print(agent1.get_preferences().most_preferred([engine_list[0]["item"], engine_list[1]["item"]]).get_name())
+
+    step = 0
+    while step < 10:
+        motormodel.step()
+        step += 1
