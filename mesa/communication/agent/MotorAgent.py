@@ -34,6 +34,13 @@ class MotorAgent(CommunicatingAgent):
                 self.__preferences.add_criterion_value(CriterionValue(engine_item, criterion, agent_rank))
 
 
+
+    def step(self):
+        """ The step methods of the agent called by the scheduler at each time tick.
+    """
+    super().step()   
+
+
     def generate_agent_scale(max_value = 10, min_value = 0):
         step = (max_value-min_value)/4
         med = random.uniform((max_value+min_value)/2 - step, (max_value+min_value)/2 + step)
