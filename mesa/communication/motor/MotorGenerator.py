@@ -11,13 +11,12 @@ def motor_generator(number_of_motors, criterion_list = [CriterionName.PRODUCTION
     agent_pref = Preferences()
     agent_pref.set_criterion_name_list(criterion_list)
 
-    dict_motors = dict()
+    list_motors = list()
     for i in range (number_of_motors):
-        dict_motors["motor" + str(i)] = {"item" : Item("Motor i", "A super cool diesel engine"), "criterion": dict()}
-        for criterion in criterion_list:    
-            print(CriterionName(criterion))    
-            dict_motors["motor" + str(i)]["criterion"][CriterionName(criterion)] = random.randint(0,10)
-    return dict_motors
+        list_motors.append({"item" : Item("Motor" + str(i), "A super cool diesel engine"), "criterion": dict()})
+        for criterion in criterion_list:     
+            list_motors[i]["criterion"][CriterionName(criterion)] = random.randint(0,10)
+    return list_motors
 
 if __name__ == '__main__':
     """Testing the Preferences class.

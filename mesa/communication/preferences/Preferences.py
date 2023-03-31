@@ -132,5 +132,3 @@ if __name__ == '__main__':
     print('Diesel Engine (for agent 1) = {}'.format(diesel_engine.get_score(agent_pref)))
     print('Most preferred item is : {}'.format(agent_pref.most_preferred([diesel_engine, electric_engine]).get_name()))
     print('In 10percent test : {}'.format(agent_pref.is_item_among_top_10_percent(electric_engine, [diesel_engine, electric_engine])))
-
-{'engine 1' : {"item" : engine, citerions : {}} }
