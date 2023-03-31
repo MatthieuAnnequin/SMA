@@ -15,7 +15,7 @@ class MotorAgent(CommunicatingAgent):
     Agent who loves motors
     """
 
-    def __init__(self, unique_id, model, name, criterion_list, item_list):
+    def __init__(self, unique_id, model, name, criterion_list, engine_list):
         """ Create a new motor agent.
         """
         super().__init__(unique_id, model, name)
@@ -26,31 +26,13 @@ class MotorAgent(CommunicatingAgent):
         self.__preferences.set_criterion_name_list(random.shuffle(criterion_list))
 
         # Initialize agent scales by criterion
-        
+        for engine in engine_list:
+            engine_scale = self.generate_agent_scale(max_value = 10, min_value = 0)
+            engine_item = engine['item']
+            for criterion in criterion_list:
+                agent_rank = self.get_agent_rank(engine_scale, engine['criterion'][criterion])
+                self.__preferences.add_criterion_value(CriterionValue(engine_item, criterion, agent_rank))
 
-        diesel_engine = Item("Diesel Engine", "A super cool diesel engine")
-        self.__preferences.add_criterion_value(CriterionValue(diesel_engine, CriterionName.PRODUCTION_COST,
-                                                    Value.VERY_GOOD))
-        self.__preferences.add_criterion_value(CriterionValue(diesel_engine, CriterionName.CONSUMPTION,
-                                                    Value.GOOD))
-        self.__preferences.add_criterion_value(CriterionValue(diesel_engine, CriterionName.DURABILITY,
-                                                    Value.VERY_GOOD))
-        self.__preferences.add_criterion_value(CriterionValue(diesel_engine, CriterionName.ENVIRONMENT_IMPACT,
-                                                    Value.VERY_BAD))
-        self.__preferences.add_criterion_value(CriterionValue(diesel_engine, CriterionName.NOISE,
-                                                    Value.VERY_BAD))
-
-        electric_engine = Item("Electric Engine", "A very quiet engine")
-        self.__preferences.add_criterion_value(CriterionValue(electric_engine, CriterionName.PRODUCTION_COST,
-                                                    Value.BAD))
-        self.__preferences.add_criterion_value(CriterionValue(electric_engine, CriterionName.CONSUMPTION,
-                                                    Value.VERY_BAD))
-        self.__preferences.add_criterion_value(CriterionValue(electric_engine, CriterionName.DURABILITY,
-                                                    Value.GOOD))
-        self.__preferences.add_criterion_value(CriterionValue(electric_engine, CriterionName.ENVIRONMENT_IMPACT,
-                                                    Value.VERY_GOOD))
-        self.__preferences.add_criterion_value(CriterionValue(electric_engine, CriterionName.NOISE,
-                                                    Value.VERY_GOOD))
 
     def generate_agent_scale(max_value = 10, min_value = 0):
         step = (max_value-min_value)/4
@@ -58,4 +40,14 @@ class MotorAgent(CommunicatingAgent):
         low = random.uniform(min_value, med)
         high = random.uniform(med, max_value)
         return [low, med, high]
+    
+    def get_agent_rank(self, engine_scale, engine_value):
+        if engine_value < engine_scale[0]:
+            return Value.VERY_BAD
+        elif engine_value < engine_scale[1]:
+            return Value.BAD
+        elif engine_value < engine_scale[2]:
+            return Value.GOOD
+        else:
+            return Value.VERY_GOOD
 
