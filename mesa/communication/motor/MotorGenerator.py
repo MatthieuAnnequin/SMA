@@ -14,13 +14,12 @@ def motor_generator(number_of_motors, criterion_list = [CriterionName.PRODUCTION
     dict_motors = dict()
     for i in range (number_of_motors):
         dict_motors["motor" + str(i)] = {"item" : Item("Motor i", "A super cool diesel engine"), "criterion": dict()}
-        for criterion in criterion_list:
-            dict_motors["motor" + str(i)]["criterion"][criterion] = random.randint(1,10)
+        for criterion in criterion_list:    
+            print(CriterionName(criterion))    
+            dict_motors["motor" + str(i)]["criterion"][CriterionName(criterion)] = random.randint(0,10)
     return dict_motors
 
 if __name__ == '__main__':
     """Testing the Preferences class.
     """
-    print(motor_generator(2, criterion_list = [CriterionName.PRODUCTION_COST, CriterionName.ENVIRONMENT_IMPACT,
-                                    CriterionName.CONSUMPTION, CriterionName.DURABILITY,
-                                    CriterionName.NOISE]))
+    print(motor_generator(2, criterion_list = [0, 1, 2, 3, 4]))
