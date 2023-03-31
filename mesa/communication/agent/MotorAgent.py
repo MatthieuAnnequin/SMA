@@ -27,6 +27,10 @@ class MotorAgent(CommunicatingAgent):
         super().__init__(unique_id, model, name)
 
         self.__preferences = Preferences()
+
+        self.first_step = True
+
+        self.list_other_agent = [x for x in agents_list if x != name]
         
 
         # Initialize citerion preferences
@@ -47,16 +51,20 @@ class MotorAgent(CommunicatingAgent):
         """ The step methods of the agent called by the scheduler at each time tick.
         """
         super().step()  
-        print('test')
-        if len(self.get_new_messages()) == 0 and self.get_name() != "agent2":
-            self.send_message(Message(self.get_name(),"agent2",MessagePerformative.PROPOSE, "Bonjour"))
-            print('sent')
-        for message in self.get_new_messages():
-            print(str(message))
-            if message.get_performative() == MessagePerformative.PROPOSE:
-                self.send_message(Message(message.get_dest(),message.get_exp(),MessagePerformative.PROPOSE, "Bonjour"))
-            else:
-                self.send_message(Message(self.get_name(),"agent2",MessagePerformative.PROPOSE, "Bonjour"))
+
+        if self.first_step and self.get_name() == "agent1":
+            agent_y = random.choice(self.list_other_agent)
+            self.send_message(Message(self.get_name(),agent_y,MessagePerformative.PROPOSE, self.__preferences.most_preferred([engine['item'] for engine in engine_list])))
+            print(self.get_name() + " propose " + str(self.__preferences.most_preferred([engine['item'] for engine in engine_list])) + " to " + agent_y)
+            self.first_step = False
+
+
+        # for message in self.get_new_messages():
+        #     print(str(message))
+        #     if message.get_performative() == MessagePerformative.PROPOSE:
+        #         self.send_message(Message(message.get_dest(),message.get_exp(),MessagePerformative.PROPOSE, "Bonjour"))
+        #     else:
+        #         self.send_message(Message(self.get_name(),"agent2",MessagePerformative.PROPOSE, "Bonjour"))
             # if message.get_performative() == MessagePerformative.QUERY_REF:
             #     self.send_message(Message(message.get_dest(), message.get_exp(), MessagePerformative.INFORM_REF, self.__v))
             # elif message.get_performative() == MessagePerformative.PROPOSE:
