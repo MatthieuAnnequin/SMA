@@ -21,7 +21,7 @@ class MotorAgent(CommunicatingAgent):
     Agent who loves motors
     """
 
-    def __init__(self, unique_id, model, name, criterion_list, engine_list):
+    def __init__(self, unique_id, model, name, criterion_list, engine_list, agents_list):
         """ Create a new motor agent.
         """
         super().__init__(unique_id, model, name)
@@ -101,9 +101,9 @@ if __name__ == "__main__":
                                     CriterionName.CONSUMPTION, CriterionName.DURABILITY,
                                     CriterionName.NOISE]
     engine_list = motor_generator(2, criterion_list )
-    print(engine_list)
-    agent1 = MotorAgent(0, motormodel, 'agent1',criterion_list, engine_list)
-    agent2 = MotorAgent(1, motormodel, 'agent2',criterion_list, engine_list)
+    agents_list = ['agent1', 'agent2']
+    agent1 = MotorAgent(0, motormodel, 'agent1',criterion_list, engine_list, agents_list)
+    agent2 = MotorAgent(1, motormodel, 'agent2',criterion_list, engine_list, agents_list)
     motormodel.schedule.add(agent1)
     motormodel.schedule.add(agent2)
     print(agent1.get_preferences().most_preferred([engine_list[0]["item"], engine_list[1]["item"]]).get_name())
