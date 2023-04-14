@@ -56,7 +56,7 @@ class MotorAgent(CommunicatingAgent):
         if self.first_step and self.get_name() == "agent1":
             agent_y = random.choice(self.list_other_agent)
             self.send_message(Message(self.get_name(),agent_y,MessagePerformative.PROPOSE, self.best_motor))
-            print(self.get_name() + " propose " + str(self.__preferences.most_preferred([engine['item'] for engine in engine_list])) + " à " + agent_y)
+            print(self.get_name() + " propose " + str(self.best_motor.get_name()) + " à " + agent_y)
             self.first_step = False
 
         
@@ -65,7 +65,9 @@ class MotorAgent(CommunicatingAgent):
             if message.get_performative() == MessagePerformative.PROPOSE:
                 self.send_message(Message(message.get_dest(),message.get_exp(),MessagePerformative.ASK_WHY, "Pourquoi ?"))
             elif message.get_performative() == MessagePerformative.ASK_WHY:
-                self.send_message(Message(self.get_name(),"agent2",MessagePerformative.PROPOSE, "Bonjour"))
+                agent_y = message.get_dest()
+                self.send_message(Message(self.get_name(),"agent2",MessagePerformative.PROPOSE, self.best_motor.get_name() + " car " ))
+
             # if message.get_performative() == MessagePerformative.QUERY_REF:
             #     self.send_message(Message(message.get_dest(), message.get_exp(), MessagePerformative.INFORM_REF, self.__v))
             # elif message.get_performative() == MessagePerformative.PROPOSE:
