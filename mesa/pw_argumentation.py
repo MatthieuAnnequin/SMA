@@ -65,6 +65,14 @@ class ArgumentAgent(CommunicatingAgent):
                 if motor_name in list_available_motor_name:
                     self.send_message(Message(message.get_dest(),message.get_exp(),MessagePerformative.COMMIT, motor_name))
 
+
+            if message.get_performative() == MessagePerformative.COMMIT:
+                motor_name = message.get_content()
+                list_available_motor_name = [engine['item'].get_name() for engine in self.model.engine_list]
+                if motor_name in list_available_motor_name:
+                    self.send_message(Message(message.get_dest(),message.get_exp(),MessagePerformative.COMMIT, motor_name))
+                    # remove element from list
+
             elif message.get_performative() == MessagePerformative.ASK_WHY:
                 agent_y = message.get_dest()
                 self.send_message(Message(self.get_name(),"agent2",MessagePerformative.ARGUE, self.best_motor.get_name() + " car " ))
