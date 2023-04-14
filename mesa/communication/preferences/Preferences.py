@@ -87,6 +87,17 @@ class Preferences:
         is_top_item = (item in sorted_item_list[:limit])
 
         return is_top_item
+    
+    def top_10_percent_list(self, item_list):
+        """
+        Return list of top 10 percent item names
+        """
+        res = []
+        for item in item_list:
+            if self.is_item_among_top_10_percent(item, item_list):
+                res.append(item)
+
+        return res
 
 
 if __name__ == '__main__':

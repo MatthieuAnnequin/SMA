@@ -102,7 +102,7 @@ class MotorAgent(CommunicatingAgent):
         return self.__preferences
     
     def get_argument(engine):
-        if 
+        pass
         
 
 
