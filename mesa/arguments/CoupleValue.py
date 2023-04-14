@@ -11,6 +11,7 @@ class CoupleValue:
     """
 
     def __init__(self , criterion_name , value):
-    """ Creates a new couple value .
-    """
-    # To be completed
+        """ Creates a new couple value .
+        """
+        self.criterion_name = criterion_name
+        self.value = value
