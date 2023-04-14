@@ -66,6 +66,9 @@ class MotorAgent(CommunicatingAgent):
                 self.send_message(Message(message.get_dest(),message.get_exp(),MessagePerformative.ASK_WHY, "Pourquoi ?"))
             elif message.get_performative() == MessagePerformative.ASK_WHY:
                 self.send_message(Message(self.get_name(),"agent2",MessagePerformative.PROPOSE, "Bonjour"))
+
+            elif message.get_performative() == MessagePerformative.ARGUE:
+                self.send_message(Message(self.get_name(),"agent2",MessagePerformative.PROPOSE, "Bonjour"))
             # if message.get_performative() == MessagePerformative.QUERY_REF:
             #     self.send_message(Message(message.get_dest(), message.get_exp(), MessagePerformative.INFORM_REF, self.__v))
             # elif message.get_performative() == MessagePerformative.PROPOSE:
@@ -98,6 +101,9 @@ class MotorAgent(CommunicatingAgent):
         
     def get_preferences(self):
         return self.__preferences
+    
+    def get_argument(engine):
+        if 
         
 
 
