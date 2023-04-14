@@ -1,6 +1,5 @@
 from mesa import Model
 from mesa.time import RandomActivation
-
 from communication.agent.CommunicatingAgent import CommunicatingAgent
 from communication.message.MessageService import MessageService
 
