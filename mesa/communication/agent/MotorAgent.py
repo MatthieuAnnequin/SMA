@@ -100,6 +100,9 @@ class MotorAgent(CommunicatingAgent):
         
     def get_preferences(self):
         return self.__preferences
+    
+    def get_argument(engine):
+        if 
         
 
 
