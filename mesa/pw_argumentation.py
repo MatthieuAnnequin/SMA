@@ -69,9 +69,11 @@ class ArgumentAgent(CommunicatingAgent):
             if message.get_performative() == MessagePerformative.COMMIT:
                 motor_name = message.get_content()
                 list_available_motor_name = [engine['item'].get_name() for engine in self.model.engine_list]
+                
                 if motor_name in list_available_motor_name:
                     self.send_message(Message(message.get_dest(),message.get_exp(),MessagePerformative.COMMIT, motor_name))
                     # remove element from list
+                    self.get_update_engine_list(motor_name)
 
             elif message.get_performative() == MessagePerformative.ASK_WHY:
                 agent_y = message.get_dest()
@@ -80,6 +82,16 @@ class ArgumentAgent(CommunicatingAgent):
 
     def get_preference(self):
         return self.preference
+    
+    def get_update_engine_list(self, motor_name):
+        """ remove motor name from engine list"""
+        res = []
+        for engine in self.model.engine_list:
+            if engine['item'].get_name() != motor_name:
+                res.append(engine)
+
+        self.model.engine_list = res
+
 
     def generate_preferences(self):
         # create agent preferences
