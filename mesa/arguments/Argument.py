@@ -87,5 +87,5 @@ class Argument :
             best_criterion_name = support_proposal.best_criterion_name 
             worst_criterion_name = support_proposal.worst_criterion_name 
             argument = str(best_criterion_name) + ' > ' + str(worst_criterion_name)
-        return support_proposal
+        return argument
 
