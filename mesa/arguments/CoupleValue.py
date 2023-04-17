@@ -15,3 +15,4 @@ class CoupleValue:
         """
         self.criterion_name = criterion_name
         self.value = value
+        self.type = 'CoupleValue'

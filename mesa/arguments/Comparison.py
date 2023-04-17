@@ -15,3 +15,4 @@ class Comparison :
         """
         self.best_criterion_name = best_criterion_name
         self.worst_criterion_name = worst_criterion_name
+        self.type = 'Comparison'
