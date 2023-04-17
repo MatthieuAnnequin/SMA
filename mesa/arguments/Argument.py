@@ -91,6 +91,7 @@ class Argument :
 
     def get_list_of_counter_arguments(self, preferences, argument):
         list_of_attacking_arguments = self.List_attacking_proposal(preferences)
+        print(list_of_attacking_arguments)
         list_of_counter_arguments = list()
         for attacking_argument in list_of_attacking_arguments:
             if attacking_argument.type == 'CoupleValue':
