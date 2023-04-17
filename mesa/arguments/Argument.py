@@ -82,11 +82,11 @@ class Argument :
         if support_proposal.type == 'CoupleValue':
             value = support_proposal.value
             criterion_name = support_proposal.criterion_name
-            argument = str(self.item) + ', ' + str(criterion_name) + ' = ' + str(value)
+            argument = str(criterion_name) + ' = ' + str(value)
         else:
             best_criterion_name = support_proposal.best_criterion_name 
             worst_criterion_name = support_proposal.worst_criterion_name 
-            argument = str(self.item) + ', ' + str(best_criterion_name) + ' > ' + str(worst_criterion_name)
+            argument = str(best_criterion_name) + ' > ' + str(worst_criterion_name)
         return argument
 
     def get_list_of_counter_arguments(self, preferences, argument):
@@ -95,9 +95,11 @@ class Argument :
         list_of_counter_arguments = list()
         for attacking_argument in list_of_attacking_arguments:
             if attacking_argument.type == 'CoupleValue':
+                print(attacking_argument.criterion_name, attacking_argument.value)
                 if str(attacking_argument.criterion_name) in argument:
                     list_of_counter_arguments.append(attacking_argument)
             else:
+                print(attacking_argument.best_criterion_name, attacking_argument.worst_criterion_name)
                 if str(attacking_argument.worst_criterion_name) in argument:
                     list_of_counter_arguments.append(attacking_argument)
         return list_of_counter_arguments
@@ -108,9 +110,9 @@ class Argument :
         if counter_proposal.type == 'CoupleValue':
             value = counter_proposal.value
             criterion_name = counter_proposal.criterion_name
-            counter_argument = 'not ' + str(self.item) + ', ' + str(criterion_name) + ' = ' + str(value)
+            counter_argument = str(criterion_name) + ' = ' + str(value)
         else:
             best_criterion_name = counter_proposal.best_criterion_name 
             worst_criterion_name = counter_proposal.worst_criterion_name 
-            counter_argument = 'not ' + str(self.item) + ', ' + str(best_criterion_name) + ' > ' + str(worst_criterion_name)
+            counter_argument = str(best_criterion_name) + ' > ' + str(worst_criterion_name)
         return counter_argument
