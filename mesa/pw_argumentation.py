@@ -15,6 +15,7 @@ from communication.message.MessagePerformative import MessagePerformative
 from communication.message.MessageService import MessageService
 from communication.motor.MotorGenerator import motor_generator
 from communication.agent.Model import SpeakingModel 
+from arguments.Argument import Argument
 
 
 class ArgumentAgent(CommunicatingAgent):
@@ -57,16 +58,16 @@ class ArgumentAgent(CommunicatingAgent):
                 if motor_name in top_10_percent_list_name:
                     self.send_message(Message(message.get_dest(),message.get_exp(),MessagePerformative.ACCEPT, motor_name))
                 else:
-                    self.send_message(Message(message.get_dest(),message.get_exp(),MessagePerformative.ASK_WHY, "Pourquoi ?"))
+                    self.send_message(Message(message.get_dest(),message.get_exp(),MessagePerformative.ASK_WHY, motor_name))
             
-            if message.get_performative() == MessagePerformative.ACCEPT:
+            elif message.get_performative() == MessagePerformative.ACCEPT:
                 motor_name = message.get_content()
                 list_available_motor_name = [engine['item'].get_name() for engine in self.model.engine_list]
                 if motor_name in list_available_motor_name:
                     self.send_message(Message(message.get_dest(),message.get_exp(),MessagePerformative.COMMIT, motor_name))
 
 
-            if message.get_performative() == MessagePerformative.COMMIT:
+            elif message.get_performative() == MessagePerformative.COMMIT:
                 motor_name = message.get_content()
                 list_available_motor_name = [engine['item'].get_name() for engine in self.model.engine_list]
                 
@@ -77,8 +78,19 @@ class ArgumentAgent(CommunicatingAgent):
 
             elif message.get_performative() == MessagePerformative.ASK_WHY:
                 agent_y = message.get_dest()
-                self.send_message(Message(self.get_name(),"agent2",MessagePerformative.ARGUE, self.best_motor.get_name() + " car " ))
+                motor_name = message.get_content()
+                motor_item = self.get_motor_item(motor_name)
+                argumentation = Argument(True, motor_item)
+                motor_argument = argumentation.support_proposal(motor_item, self.get_preferences())
+                self.send_message(Message(self.get_name(),"agent2",MessagePerformative.ARGUE, self.best_motor.get_name() + ":" + str(motor_argument) ))
 
+            elif message.get_performative() == MessagePerformative.ARGUE:
+                agent_y = message.get_dest()
+                list_content = message.get_content().split(':')
+                motor_name, str_argument = list_content[0], list_content[1]
+                print(motor_name, str_argument)
+                pass
+            
 
     def get_preference(self):
         return self.preference
@@ -91,6 +103,12 @@ class ArgumentAgent(CommunicatingAgent):
                 res.append(engine)
 
         self.model.engine_list = res
+
+    def get_motor_item(self, motor_name):
+        for engine in self.model.engine_list:
+            if engine['item'].get_name() == motor_name:
+                return engine['item']
+
 
 
     def generate_preferences(self):
