@@ -25,7 +25,7 @@ class Argument :
         self.comparison_list = list()
         self.couple_values_list = list()
 
-    def add_premiss_comparison(self, criterion_name_1, criterion_name_2, preferences):
+    def add_premiss_comparison(self, criterion_name_1, criterion_name_2):
         """ Adds a premiss comparison in the comparison list .
         """
         self.comparison_list.append(Comparison(criterion_name_1, criterion_name_2))
@@ -77,7 +77,7 @@ class Argument :
         : param item : str - name of the item which was proposed
         : return : string - the strongest supportive argument
         """
-        list_of_supporting_proposal = List_supporting_proposal(item, preferences)
+        list_of_supporting_proposal = self.List_supporting_proposal(item, preferences)
         support_proposal = random.choice(list_of_supporting_proposal)
         return support_proposal
 
