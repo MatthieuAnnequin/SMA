@@ -82,14 +82,17 @@ class ArgumentAgent(CommunicatingAgent):
                 motor_item = self.get_motor_item(motor_name)
                 argumentation = Argument(True, motor_item)
                 motor_argument = argumentation.support_proposal(motor_item, self.get_preferences())
-                self.send_message(Message(self.get_name(),"agent2",MessagePerformative.ARGUE, self.best_motor.get_name() + ":" + str(motor_argument) ))
+                self.send_message(Message(self.get_name(),agent_y, MessagePerformative.ARGUE, motor_name + ":" + str(motor_argument) ))
 
             elif message.get_performative() == MessagePerformative.ARGUE:
-                agent_y = message.get_dest()
                 list_content = message.get_content().split(':')
                 motor_name, str_argument = list_content[0], list_content[1]
                 print(motor_name, str_argument)
-                pass
+                motor_item = self.get_motor_item(motor_name)
+                argumentation = Argument(False, motor_item)
+                counter_argument = argumentation.get_counter_argument(self.get_preferences(), str_argument)
+                self.send_message(Message(self.get_name(),message.get_exp(), MessagePerformative.ARGUE, motor_name + ":" + str(counter_argument) ))
+
             
 
     def get_preference(self):
