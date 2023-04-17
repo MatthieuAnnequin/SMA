@@ -89,3 +89,27 @@ class Argument :
             argument = str(best_criterion_name) + ' > ' + str(worst_criterion_name)
         return argument
 
+    def get_list_of_counter_arguments(self, item, preferences, argument):
+        list_of_attacking_arguments = self.List_attacking_proposal(item, preferences)
+        list_of_counter_arguments = list()
+        for attacking_argument in list_of_attacking_arguments:
+            if attacking_argument.type == 'CoupleValue':
+                if str(attacking_argument.criterion_name) in argument:
+                    list_of_counter_arguments.append(attacking_argument)
+            else:
+                if str(attacking_argument.worst_criterion_name) in argument:
+                    list_of_counter_arguments.append(attacking_argument)
+        return list_of_counter_arguments
+
+    def get_counter_argument(self, item, preferences, argument):
+        list_of_counter_arguments = self.get_list_of_counter_arguments(item, preferences, argument)
+        counter_proposal = random.choice(list_of_counter_arguments)
+        if counter_proposal.type == 'CoupleValue':
+            value = counter_proposal.value
+            criterion_name = counter_proposal.criterion_name
+            counter_argument = str(criterion_name) + ' = ' + str(value)
+        else:
+            best_criterion_name = counter_proposal.best_criterion_name 
+            worst_criterion_name = counter_proposal.worst_criterion_name 
+            counter_argument = str(best_criterion_name) + ' > ' + str(worst_criterion_name)
+        return counter_argument
