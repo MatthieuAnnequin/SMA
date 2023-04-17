@@ -3,6 +3,7 @@
 from arguments.Comparison import Comparison
 from arguments.CoupleValue import CoupleValue
 from communication.preferences.Value import Value
+import random
 
 
 class Argument :
@@ -67,13 +68,16 @@ class Argument :
             for criterion_name_2 in criterion_list:
                 if criterion_name_2 != criterion_name_1 and criterion_name_1 == preferences.is_preferred_criterion(criterion_name_1, criterion_name_2):
                     self.add_premiss_comparison(criterion_name_1, criterion_name_2)
-        list_of_supporting_proposal = self.comparison_list + self.couple_values_list
-        return list_of_supporting_proposal  
+        list_of_attacking_proposal = self.comparison_list + self.couple_values_list
+        return list_of_attacking_proposal  
 
-    def support_proposal(self, item):
+    def support_proposal(self, item, preferences):
         """
         Used when the agent receives " ASK_WHY " after having proposed an item
         : param item : str - name of the item which was proposed
         : return : string - the strongest supportive argument
         """
+        list_of_supporting_proposal = List_supporting_proposal(item, preferences)
+        support_proposal = random.choice(list_of_supporting_proposal)
+        return support_proposal
 
