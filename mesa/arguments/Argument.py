@@ -82,11 +82,11 @@ class Argument :
         if support_proposal.type == 'CoupleValue':
             value = support_proposal.value
             criterion_name = support_proposal.criterion_name
-            argument = str(item) + ', ' + str(criterion_name) + ' = ' + str(value)
+            argument = str(self.item) + ', ' + str(criterion_name) + ' = ' + str(value)
         else:
             best_criterion_name = support_proposal.best_criterion_name 
             worst_criterion_name = support_proposal.worst_criterion_name 
-            argument = str(item) + ', ' + str(best_criterion_name) + ' > ' + str(worst_criterion_name)
+            argument = str(self.item) + ', ' + str(best_criterion_name) + ' > ' + str(worst_criterion_name)
         return argument
 
     def get_list_of_counter_arguments(self, preferences, argument):
