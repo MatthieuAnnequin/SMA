@@ -16,6 +16,8 @@ from communication.message.MessageService import MessageService
 from communication.motor.MotorGenerator import motor_generator
 from communication.agent.Model import SpeakingModel 
 from arguments.Argument import Argument
+from arguments.CoupleValue import CoupleValue
+from arguments.Comparison import Comparison
 
 
 class ArgumentAgent(CommunicatingAgent):
@@ -81,16 +83,13 @@ class ArgumentAgent(CommunicatingAgent):
                 motor_name = message.get_content()
                 motor_item = self.get_motor_item(motor_name)
                 argumentation = Argument(True, motor_item)
-                motor_argument = argumentation.support_proposal(motor_item, self.get_preferences())
+                motor_argument = argumentation.support_proposal(self.get_preferences())
                 self.send_message(Message(self.get_name(),agent_y, MessagePerformative.ARGUE, motor_name + ":" + str(motor_argument) ))
 
             elif message.get_performative() == MessagePerformative.ARGUE:
-                list_content = message.get_content().split(':')
-                motor_name, str_argument = list_content[0], list_content[1]
-                print(motor_name, str_argument)
-                motor_item = self.get_motor_item(motor_name)
+                motor_item, argument = self.arguement_parser(message.get_content())
                 argumentation = Argument(False, motor_item)
-                counter_argument = argumentation.get_counter_argument(self.get_preferences(), str_argument)
+                counter_argument = argumentation.get_counter_argument(self.get_preferences(), argument, [engine['item'] for engine in self.model.engine_list])
                 self.send_message(Message(self.get_name(),message.get_exp(), MessagePerformative.ARGUE, motor_name + ":" + str(counter_argument) ))
 
             
@@ -149,6 +148,48 @@ class ArgumentAgent(CommunicatingAgent):
         
     def get_preferences(self):
         return self.__preferences
+    
+    def arguement_parser(self, str_arg):
+        dic_crit = {'PRODUCTION_COST' : CriterionName.PRODUCTION_COST,
+                    'CONSUMPTION' : CriterionName.CONSUMPTION,
+                    'DURABILITY' : CriterionName.DURABILITY,
+                    'ENVIRONMENT_IMPACT' : CriterionName.ENVIRONMENT_IMPACT,
+                    'NOISE' : CriterionName.NOISE,}
+        dic_value = {'.VERY_GOOD' : Value.VERY_GOOD,
+                     '.GOOD' : Value.GOOD,
+                     '.BAD' : Value.BAD,
+                     '.VERY_BAD' : Value.VERY_BAD}
+        item_name = str_arg.split(':')[0]
+        item = self.get_motor_item(item_name)
+        arg_part = str_arg.split(':')[1]
+        if ' = ' in arg_part:
+            crit_str = arg_part.split(' = ')[0]
+            value_str = arg_part.split(' = ')[1]
+            for crit_name in list(dic_crit):
+                if crit_name in crit_str:
+                    criterion = dic_crit[crit_name]
+            for value_name in list(dic_value):
+                if value_name in value_str:
+                    value = dic_value[value_name]
+
+            return item, CoupleValue(criterion, value)
+            
+        elif ' > ' in arg_part:
+            crit_1_str = arg_part.split(' = ')[0]
+            crit_2_str = arg_part.split(' = ')[1]
+
+            for crit_name in list(dic_crit):
+                if crit_name in crit_1_str:
+                    criterion_1 = dic_crit[crit_name]
+
+            for crit_name in list(dic_crit):
+                if crit_name in crit_2_str:
+                    criterion_2 = dic_crit[crit_name]
+            return item, Comparison(criterion_1, criterion_2)
+    
+
+
+
     
 
 
