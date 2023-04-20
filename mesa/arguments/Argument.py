@@ -122,11 +122,11 @@ class Argument :
         if argument.type == 'CoupleValue':
             criterion_name = argument.criterion_name
             agent_value = self.item.get_value(preferences, criterion_name)
-            if Value(argument.value) > Value(agent_value):
+            if argument.value.value > agent_value.value:
                 possible_counter_arguments.append(str(criterion_name) + ' = ' + str(agent_value))
             for engine in engine_list:
                 engine_value = engine.get_value(preferences, criterion_name)
-                if preferences.is_preferred_item(self, engine, self.item) and preferences.is_item_among_top_10_percent(engine,engine_list) and engine_value > agent_value:
+                if preferences.is_preferred_item(engine, self.item) and preferences.is_item_among_top_10_percent(engine,engine_list) and engine_value.value > agent_value.value:
                     possible_counter_arguments.append(str(engine) + ', ' + str(criterion_name) + ' = ' + str(agent_value))
         else:
             best_criterion_name = argument.best_criterion_name
