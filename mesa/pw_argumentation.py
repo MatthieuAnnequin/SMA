@@ -89,8 +89,8 @@ class ArgumentAgent(CommunicatingAgent):
             elif message.get_performative() == MessagePerformative.ARGUE:
                 motor_item, argument = self.arguement_parser(message.get_content())
                 argumentation = Argument(False, motor_item)
-                counter_argument = argumentation.get_counter_argument(self.get_preferences(), argument, [engine['item'] for engine in self.model.engine_list])
-                self.send_message(Message(self.get_name(),message.get_exp(), MessagePerformative.ARGUE, motor_name + ":" + str(counter_argument) ))
+                new_item, counter_argument = argumentation.get_counter_argument(self.get_preferences(), argument, [engine['item'] for engine in self.model.engine_list])
+                self.send_message(Message(self.get_name(),message.get_exp(), MessagePerformative.ARGUE, new_item.get_name() + ":" + str(counter_argument) ))
 
             
 
