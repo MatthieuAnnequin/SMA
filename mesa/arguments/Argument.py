@@ -134,7 +134,8 @@ class Argument :
                     if preferences.is_preferred_criterion(criterion_name_2, criterion_name) and criterion_name_2 != criterion_name and self.item.get_value(preferences, criterion_name_2).value < agent_value.value :
                     #    self.add_premiss_couple_values(criterion_name_2, self.item.get_value(preferences, criterion_name_2))
                     #    self.add_premiss_comparison(criterion_name_2, criterion_name)
-                       possible_counter_arguments.append((self.item,str(criterion_name_2) + ' = ' + str(self.item.get_value(preferences, criterion_name_2)) ' and ' + str(criterion_name_2) + ' > ' + str(criterion_name)))
+                        argument = str(criterion_name_2) + ' = ' + str(self.item.get_value(preferences, criterion_name_2)) + ' and ' + str(criterion_name_2) + ' > ' + str(criterion_name)
+                        possible_counter_arguments.append((self.item,argument))
  
 
 
