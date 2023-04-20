@@ -78,7 +78,7 @@ class Argument :
         : return : string - the strongest supportive argument
         """
         list_of_supporting_proposal = self.List_supporting_proposal(preferences)
-        support_proposal = random.choice(list_of_supporting_proposal)
+        support_proposal = list_of_supporting_proposal[0]
         if support_proposal.type == 'CoupleValue':
             value = support_proposal.value
             criterion_name = support_proposal.criterion_name
@@ -104,15 +104,31 @@ class Argument :
                     list_of_counter_arguments.append(attacking_argument)
         return list_of_counter_arguments
 
-    def get_counter_argument(self, preferences, argument):
-        list_of_counter_arguments = self.get_list_of_counter_arguments(preferences, argument)
-        counter_proposal = random.choice(list_of_counter_arguments)
-        if counter_proposal.type == 'CoupleValue':
-            value = counter_proposal.value
-            criterion_name = counter_proposal.criterion_name
-            counter_argument = str(criterion_name) + ' = ' + str(value)
+    # def get_counter_argument(self, preferences, argument):
+    #     list_of_counter_arguments = self.get_list_of_counter_arguments(preferences, argument)
+    #     counter_proposal = list_of_counter_arguments[0]
+    #     if counter_proposal.type == 'CoupleValue':
+    #         value = counter_proposal.value
+    #         criterion_name = counter_proposal.criterion_name
+    #         counter_argument = str(criterion_name) + ' = ' + str(value)
+    #     else:
+    #         best_criterion_name = counter_proposal.best_criterion_name 
+    #         worst_criterion_name = counter_proposal.worst_criterion_name 
+    #         counter_argument = str(best_criterion_name) + ' > ' + str(worst_criterion_name)
+    #     return counter_argument
+    
+    def get_counter_argument(self, preferences, argument, engine_list):
+        possible_counter_arguments = list()
+        if argument.type == 'CoupleValue':
+            criterion_name = argument.criterion_name
+            agent_value = self.item.get_value(preferences, criterion_name)
+            if Value(argument.value) > Value(agent_value):
+                possible_counter_arguments.append(str(criterion_name) + ' = ' + str(agent_value))
+            for engine in engine_list:
+                engine_value = engine.get_value(preferences, criterion_name)
+                if preferences.is_preferred_item(self, engine, self.item) and preferences.is_item_among_top_10_percent(engine,engine_list) and engine_value > agent_value:
+                    possible_counter_arguments.append(str(engine) + ', ' + str(criterion_name) + ' = ' + str(agent_value))
         else:
-            best_criterion_name = counter_proposal.best_criterion_name 
-            worst_criterion_name = counter_proposal.worst_criterion_name 
-            counter_argument = str(best_criterion_name) + ' > ' + str(worst_criterion_name)
-        return counter_argument
+            best_criterion_name = argument.best_criterion_name
+            worst_criterion_name = argument.worst_criterion_name
+        return random.choice(possible_counter_arguments)            
