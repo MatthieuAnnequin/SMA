@@ -99,7 +99,7 @@ class ArgumentAgent(CommunicatingAgent):
                 argumentation = Argument(True, motor_item)
                 motor_argument = argumentation.support_proposal(self.get_preferences())
                 self.list_agent_arguments.append((motor_item, motor_argument))
-                self.send_message(Message(self.get_name(),agent_y, MessagePerformative.ARGUE, motor_name + ":" + str(motor_argument) ))
+                self.send_message(Message(message.get_dest(),message.get_exp(), MessagePerformative.ARGUE, motor_name + ":" + str(motor_argument) ))
 
             elif message.get_performative() == MessagePerformative.ARGUE:
                 motor_item, argument = self.arguement_parser(message.get_content())
@@ -107,15 +107,22 @@ class ArgumentAgent(CommunicatingAgent):
                     print(self.unique_id, "pro")
                     argumentation = Argument(False, motor_item)
                     new_item, pro_argument = argumentation.get_pro_argument(self.get_preferences(), argument, [engine['item'] for engine in self.model.engine_list], self.list_agent_arguments)
-                    self.list_agent_arguments.append((new_item, pro_argument))
-                    self.send_message(Message(self.get_name(),message.get_exp(), MessagePerformative.ARGUE, new_item.get_name() + ":" + str(pro_argument) ))
+                    if new_item.get_name() != motor_item.get_name():
+                        self.send_message(Message(message.get_dest(),message.get_exp(), MessagePerformative.PROPOSE, new_item.get_name()))
+                    else:
+                        self.send_message(Message(message.get_dest(),message.get_exp(), MessagePerformative.ARGUE, new_item.get_name() + ":" + str(pro_argument) ))
+                        self.list_agent_arguments.append((new_item, pro_argument))
+
                 else:    
                     print(self.unique_id, "counter")                                  
                     argumentation = Argument(False, motor_item)
                     new_item, counter_argument = argumentation.get_counter_argument(self.get_preferences(), argument, [engine['item'] for engine in self.model.engine_list], self.list_agent_arguments)
-                    self.list_agent_arguments.append((new_item, counter_argument))
-                    self.send_message(Message(self.get_name(),message.get_exp(), MessagePerformative.ARGUE, new_item.get_name() + ":" + str(counter_argument) ))
-                
+                    if new_item.get_name() != motor_item.get_name():
+                        self.send_message(Message(message.get_dest(),message.get_exp(), MessagePerformative.PROPOSE, new_item.get_name()))
+                    else:
+                        self.send_message(Message(message.get_dest(),message.get_exp(), MessagePerformative.ARGUE, new_item.get_name() + ":" + str(counter_argument) ))
+                        self.list_agent_arguments.append((new_item, counter_argument))
+
 
             
 
