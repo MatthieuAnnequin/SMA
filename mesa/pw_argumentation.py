@@ -39,6 +39,7 @@ class ArgumentAgent(CommunicatingAgent):
         self.best_motor = self.__preferences.most_preferred([engine['item'] for engine in model.engine_list])
         self.top_10_percent_list = self.__preferences.top_10_percent_list([engine['item'] for engine in model.engine_list])
         
+        self.current_motor_proposal_name = None
        
 
     def step(self):
@@ -56,6 +57,7 @@ class ArgumentAgent(CommunicatingAgent):
             print(message)
             if message.get_performative() == MessagePerformative.PROPOSE:
                 motor_name = message.get_content()
+                self.current_motor_proposal_name = motor_name
                 top_10_percent_list_name = [item.get_name() for item in self.top_10_percent_list]
                 if motor_name in top_10_percent_list_name:
                     self.send_message(Message(message.get_dest(),message.get_exp(),MessagePerformative.ACCEPT, motor_name))
@@ -79,7 +81,7 @@ class ArgumentAgent(CommunicatingAgent):
                     self.get_update_engine_list(motor_name)
 
             elif message.get_performative() == MessagePerformative.ASK_WHY:
-                agent_y = message.get_dest()
+                agent_y = message.get_exp()
                 motor_name = message.get_content()
                 motor_item = self.get_motor_item(motor_name)
                 argumentation = Argument(True, motor_item)
@@ -88,9 +90,15 @@ class ArgumentAgent(CommunicatingAgent):
 
             elif message.get_performative() == MessagePerformative.ARGUE:
                 motor_item, argument = self.arguement_parser(message.get_content())
-                argumentation = Argument(False, motor_item)
-                new_item, counter_argument = argumentation.get_counter_argument(self.get_preferences(), argument, [engine['item'] for engine in self.model.engine_list])
-                self.send_message(Message(self.get_name(),message.get_exp(), MessagePerformative.ARGUE, new_item.get_name() + ":" + str(counter_argument) ))
+                if self.current_motor_proposal_name == motor_item.get_name():
+                    argumentation = Argument(False, motor_item)
+                    new_item, counter_argument = argumentation.get_pro_argument(self.get_preferences(), argument, [engine['item'] for engine in self.model.engine_list])
+                    self.send_message(Message(self.get_name(),message.get_exp(), MessagePerformative.ARGUE, new_item.get_name() + ":" + str(counter_argument) ))
+                else:                                      
+                    argumentation = Argument(False, motor_item)
+                    new_item, counter_argument = argumentation.get_counter_argument(self.get_preferences(), argument, [engine['item'] for engine in self.model.engine_list])
+                    self.send_message(Message(self.get_name(),message.get_exp(), MessagePerformative.ARGUE, new_item.get_name() + ":" + str(counter_argument) ))
+                
 
             
 
@@ -162,7 +170,22 @@ class ArgumentAgent(CommunicatingAgent):
         item_name = str_arg.split(':')[0]
         item = self.get_motor_item(item_name)
         arg_part = str_arg.split(':')[1]
-        if ' = ' in arg_part:
+        if ' and ' in arg_part:
+            arg_str_1 =  arg_part.split(' and ')[0]
+            arg_str_2 =  arg_part.split(' and ')[1]
+            res_arg_1 = self.parse_comparison(arg_str_2)
+            res_arg_2 = self.parse_comparison(arg_str_2)
+            return item, res_arg_1
+        
+        elif ' = ' in arg_part:
+            res_arg = self.parse_couple_value(arg_part)
+            return item, res_arg
+            
+        elif ' > ' in arg_part:
+            res_arg = self.parse_comparison(arg_part)
+            return item, res_arg
+        
+        def parse_couple_value(self, arg_part):
             crit_str = arg_part.split(' = ')[0]
             value_str = arg_part.split(' = ')[1]
             for crit_name in list(dic_crit):
@@ -172,9 +195,9 @@ class ArgumentAgent(CommunicatingAgent):
                 if value_name in value_str:
                     value = dic_value[value_name]
 
-            return item, CoupleValue(criterion, value)
-            
-        elif ' > ' in arg_part:
+            return CoupleValue(criterion, value)
+        
+        def parse_comparison(self, arg_part):
             crit_1_str = arg_part.split(' = ')[0]
             crit_2_str = arg_part.split(' = ')[1]
 
@@ -185,7 +208,8 @@ class ArgumentAgent(CommunicatingAgent):
             for crit_name in list(dic_crit):
                 if crit_name in crit_2_str:
                     criterion_2 = dic_crit[crit_name]
-            return item, Comparison(criterion_1, criterion_2)
+            return Comparison(criterion_1, criterion_2)
+
     
 
 
@@ -290,6 +314,6 @@ launch_step()
 if __name__ == " __main__ ":
     print('Launch ArgumentModel')
     argument_model = ArgumentModel()
-    argument_model.run_N(10)
+    argument_model.run_N(15)
 
 # To be completed
