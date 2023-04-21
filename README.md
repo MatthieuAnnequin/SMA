@@ -20,3 +20,6 @@ Les résultats suivants sont pour un cas à 3 moteurs.
 
 Cas où le moteur favori de l'agent 1 est dans les 10% préféré de l'agent 2 :  
 ![WhatsApp Image 2023-04-21 à 11 35 29](https://user-images.githubusercontent.com/82157628/233603790-84bc439b-997d-4082-a38b-a438cd446045.jpg)
+
+Cas où on change une fois de moteur dans la discussion :
+![Im2](https://user-images.githubusercontent.com/82157628/233605313-e35ab3df-1f1a-4347-9b36-ba2c890bd801.jpg)
