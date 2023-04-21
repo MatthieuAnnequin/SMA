@@ -65,7 +65,6 @@ class ArgumentAgent(CommunicatingAgent):
             self.send_message(Message(self.get_name(), agent_y, MessagePerformative.PROPOSE, self.best_motor.get_name()))
             self.already_discussed_motor.append(self.best_motor.get_name())
             self.current_motor_proposal_name = self.best_motor.get_name()
-            print(self.get_name() + " propose " + str(self.best_motor.get_name()) + " à " + agent_y)
             self.first_step = False
 
         
@@ -108,7 +107,6 @@ class ArgumentAgent(CommunicatingAgent):
             elif message.get_performative() == MessagePerformative.ARGUE:
                 motor_item, argument = self.arguement_parser(message.get_content())
                 if self.current_motor_proposal_name == motor_item.get_name():
-                    print(self.unique_id, "pro")
                     possible_motors = [engine['item'] for engine in self.model.engine_list if not(engine['item'].get_name() in self.already_discussed_motor)]                            
                     argumentation = Argument(False, motor_item)
                     new_item, pro_argument, accept = argumentation.get_pro_argument(self.get_preferences(), argument, possible_motors, self.list_agent_arguments)
@@ -121,7 +119,6 @@ class ArgumentAgent(CommunicatingAgent):
                         self.list_agent_arguments.append((new_item, pro_argument))
 
                 else:    
-                    print(self.unique_id, "counter")   
                     possible_motors = [engine['item'] for engine in self.model.engine_list if not(engine['item'].get_name() in self.already_discussed_motor)]                            
                     argumentation = Argument(False, motor_item)
                     new_item, counter_argument, accept = argumentation.get_counter_argument(self.get_preferences(), argument, possible_motors, self.list_agent_arguments)
@@ -162,7 +159,7 @@ class ArgumentAgent(CommunicatingAgent):
         # Initialize citerion preferences
         self.agent_criterion_list = self.model.criterion_list.copy()
         random.shuffle(self.agent_criterion_list)
-        print(self.unique_id, self.agent_criterion_list)
+        #print(self.unique_id, self.agent_criterion_list)
         self.__preferences.set_criterion_name_list(self.agent_criterion_list)
 
         # Initialize agent scales by criterion
@@ -251,7 +248,7 @@ class ArgumentAgent(CommunicatingAgent):
 class ArgumentModel(Model):
     """ ArgumentModel which inherit from Model .
     """
-    def __init__(self):
+    def __init__(self, n_motors = 5):
         self.schedule = RandomActivation(self)
         self.__messages_service = MessageService(self.schedule)
         self.running = True
@@ -263,7 +260,7 @@ class ArgumentModel(Model):
                                         CriterionName.NOISE]
         
         # generate list of engine
-        self.engine_list = motor_generator(4, self.criterion_list )
+        self.engine_list = motor_generator(n_motors, self.criterion_list )
 
         # define agents, create them and add them to the model
         agents_list = ['agent1', 'agent2']
@@ -271,14 +268,6 @@ class ArgumentModel(Model):
         agent2 = ArgumentAgent('agent2', self, 'agent2', agents_list)
         self.schedule.add(agent1)
         self.schedule.add(agent2)
-
-        # To be completed
-        #
-        # a = ArgumentAgent(id , " agent_name ")
-        # a. generate_preferences(preferences)
-        # self.schedule .add(a)
-        # ...
-
         
 
     def step(self):
@@ -291,45 +280,13 @@ class ArgumentModel(Model):
 
 
 
-
-
-def launch_test():
-    communicating_model = ArgumentModel()
-
-    assert(len(communicating_model.schedule.agents) == 2)
-    print("*     get the number of CommunicatingAgent => OK")
-
-    agent0 = communicating_model.schedule.agents[0]
-    agent1 = communicating_model.schedule.agents[1]
-
-    assert(agent0.get_name() == 'agent1')
-    assert(agent1.get_name() == 'agent2')
-    print("*     get_name() => OK")
-
-    agent0.send_message(Message('agent1', 'agent2', MessagePerformative.COMMIT, "Bonjour"))
-    agent1.send_message(Message('agent2', 'agent1', MessagePerformative.COMMIT, "Bonjour"))
-    agent0.send_message(Message('agent1', 'agent2', MessagePerformative.COMMIT, "Comment ça va ?"))
-
-    assert(len(agent0.get_new_messages()) == 1)
-    print(agent0.get_messages())
-    assert(len(agent1.get_new_messages()) == 2)
-    assert(len(agent0.get_messages()) == 1)
-    assert(len(agent1.get_messages()) == 2)
-    print("*     send_message() & dispatch_message (instant delivery) => OK")
-
-    MessageService.get_instance().set_instant_delivery(False)
-
-    agent0.send_message(Message('agent1', 'agent2', MessagePerformative.COMMIT, "Bonjour"))
-    agent1.send_message(Message('agent2', 'agent1', MessagePerformative.COMMIT, "Bonjour"))
-    agent0.send_message(Message('agent1', 'agent2', MessagePerformative.COMMIT, "Comment ça va ?"))
-
 def launch_step():
     print('Launch ArgumentModel')
     argument_model = ArgumentModel()
 
     step = 0
     while step < 10:
-        print(step)
+        #print(step)
         argument_model.step()
         step += 1
 
@@ -339,7 +296,5 @@ launch_step()
 
 if __name__ == " __main__ ":
     print('Launch ArgumentModel')
-    argument_model = ArgumentModel()
-    argument_model.run_N(15)
-
-# To be completed
+    argument_model = ArgumentModel(n_motors=5)
+    argument_model.run_N(20)
