@@ -134,7 +134,6 @@ class Argument :
                         possible_counter_arguments.append((self.item,possible_counter_argument,False))
             for engine in engine_list:
                 engine_value = engine.get_value(preferences, criterion_name)
-                print(engine,preferences.is_preferred_item(engine, self.item),preferences.is_item_among_top_10_percent(engine,engine_list),engine_value.value, agent_value.value)
                 if preferences.is_preferred_item(engine, self.item) and preferences.is_item_among_top_10_percent(engine,engine_list) and engine_value.value > agent_value.value:
                     possible_counter_argument = str(criterion_name) + ' = ' + str(agent_value)
                     if (engine,possible_counter_argument) not in list_agent_arg:
