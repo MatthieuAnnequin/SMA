@@ -98,7 +98,7 @@ class ArgumentAgent(CommunicatingAgent):
                 motor_item = self.get_motor_item(motor_name)
                 argumentation = Argument(True, motor_item)
                 motor_argument = argumentation.support_proposal(self.get_preferences())
-                self.list_agent_arguments.append(motor_argument)
+                self.list_agent_arguments.append((motor_item, motor_argument))
                 self.send_message(Message(self.get_name(),agent_y, MessagePerformative.ARGUE, motor_name + ":" + str(motor_argument) ))
 
             elif message.get_performative() == MessagePerformative.ARGUE:
@@ -107,13 +107,13 @@ class ArgumentAgent(CommunicatingAgent):
                     print(self.unique_id, "pro")
                     argumentation = Argument(False, motor_item)
                     new_item, pro_argument = argumentation.get_pro_argument(self.get_preferences(), argument, [engine['item'] for engine in self.model.engine_list], self.list_agent_arguments)
-                    self.list_agent_arguments.append(pro_argument)
+                    self.list_agent_arguments.append((new_item, pro_argument))
                     self.send_message(Message(self.get_name(),message.get_exp(), MessagePerformative.ARGUE, new_item.get_name() + ":" + str(pro_argument) ))
                 else:    
                     print(self.unique_id, "counter")                                  
                     argumentation = Argument(False, motor_item)
                     new_item, counter_argument = argumentation.get_counter_argument(self.get_preferences(), argument, [engine['item'] for engine in self.model.engine_list], self.list_agent_arguments)
-                    self.list_agent_arguments.append(counter_argument)
+                    self.list_agent_arguments.append((new_item, counter_argument))
                     self.send_message(Message(self.get_name(),message.get_exp(), MessagePerformative.ARGUE, new_item.get_name() + ":" + str(counter_argument) ))
                 
 
