@@ -131,23 +131,24 @@ class Argument :
                     self.add_premiss_comparison(criterion_name_2, criterion_name)
                     possible_counter_argument = str(criterion_name_2) + ' = ' + str(self.item.get_value(preferences, criterion_name_2)) + ' and ' + str(criterion_name_2) + ' > ' + str(criterion_name)
                     if (self.item, possible_counter_argument) not in list_agent_arg:
-                        possible_counter_arguments.append((self.item,possible_counter_argument))
+                        possible_counter_arguments.append((self.item,possible_counter_argument,False))
             for engine in engine_list:
                 engine_value = engine.get_value(preferences, criterion_name)
                 print(engine,preferences.is_preferred_item(engine, self.item),preferences.is_item_among_top_10_percent(engine,engine_list),engine_value.value, agent_value.value)
                 if preferences.is_preferred_item(engine, self.item) and preferences.is_item_among_top_10_percent(engine,engine_list) and engine_value.value > agent_value.value:
                     possible_counter_argument = str(criterion_name) + ' = ' + str(agent_value)
                     if (engine,possible_counter_argument) not in list_agent_arg:
-                        possible_counter_arguments.append((engine,possible_counter_argument))
+                        possible_counter_arguments.append((engine,possible_counter_argument, False))
             if argument.value.value > agent_value.value and agent_value.value < 3:
                 possible_counter_argument = str(criterion_name) + ' = ' + str(agent_value)
                 if (self.item, possible_counter_argument) not in list_agent_arg:
-                    possible_counter_arguments.append((self.item, possible_counter_argument))
+                    possible_counter_arguments.append((self.item, possible_counter_argument, False))
             #if argument.value.value =< agent_value.value:
             
         else:
             best_criterion_name = argument.best_criterion_name
             worst_criterion_name = argument.worst_criterion_name
+        possible_counter_arguments.append((self.item, None, True))
         return possible_counter_arguments[0]           
     
     def get_pro_argument(self, preferences, argument, engine_list, list_agent_arguments):
@@ -162,18 +163,19 @@ class Argument :
                     self.add_premiss_comparison(criterion_name_2, criterion_name)
                     possible_pro_argument = str(criterion_name_2) + ' = ' + str(self.item.get_value(preferences, criterion_name_2)) + ' and ' + str(criterion_name_2) + ' > ' + str(criterion_name)
                     if (self.item,possible_pro_argument) not in list_agent_arguments:
-                        possible_pro_arguments.append((self.item,possible_pro_argument))
+                        possible_pro_arguments.append((self.item,possible_pro_argument, False))
             for engine in engine_list:
                 engine_value = engine.get_value(preferences, criterion_name)
                 if preferences.is_preferred_item(engine, self.item) and preferences.is_item_among_top_10_percent(engine,engine_list) and engine_value.value > agent_value.value:
                     possible_pro_argument = str(criterion_name) + ' = ' + str(agent_value)
                     if (engine, possible_pro_argument) not in list_agent_arguments:
-                        possible_pro_arguments.append((engine,possible_pro_argument))
+                        possible_pro_arguments.append((engine,possible_pro_argument, False))
             if argument.value.value < agent_value.value and agent_value.value > 1:
                 possible_pro_argument = str(criterion_name) + ' = ' + str(agent_value)
                 if (self.item, possible_pro_argument) not in list_agent_arguments:
-                    possible_pro_arguments.append((self.item, possible_pro_argument))  
+                    possible_pro_arguments.append((self.item, possible_pro_argument, False))  
         else:
             best_criterion_name = argument.best_criterion_name
             worst_criterion_name = argument.worst_criterion_name
+        possible_pro_arguments.append((self.item, None, True))
         return possible_pro_arguments[0]            
