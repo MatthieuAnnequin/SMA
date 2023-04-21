@@ -56,22 +56,22 @@ class Argument :
         list_of_supporting_proposal = comparison_list + couple_values_list
         return list_of_supporting_proposal
         
-    def List_attacking_proposal(self, preferences) :
-        """ Generate a list of premisses which can be used to attack an item
-        : param item : Item - name of the item
-        : return : list of all premisses CON an item ( sorted by order of importance
-        based on preferences )
-        """
-        criterion_list = preferences.get_criterion_name_list()
-        for criterion_name_1 in criterion_list:
-            value = self.item.get_value(preferences, criterion_name_1)
-            if value == Value.VERY_BAD or value == Value.BAD:
-                self.add_premiss_couple_values(criterion_name_1, value)
-            for criterion_name_2 in criterion_list:
-                if criterion_name_2 != criterion_name_1 and preferences.is_preferred_criterion(criterion_name_1, criterion_name_2):
-                    self.add_premiss_comparison(criterion_name_1, criterion_name_2)
-        list_of_attacking_proposal = self.comparison_list + self.couple_values_list
-        return list_of_attacking_proposal  
+    # def List_attacking_proposal(self, preferences) :
+    #     """ Generate a list of premisses which can be used to attack an item
+    #     : param item : Item - name of the item
+    #     : return : list of all premisses CON an item ( sorted by order of importance
+    #     based on preferences )
+    #     """
+    #     criterion_list = preferences.get_criterion_name_list()
+    #     for criterion_name_1 in criterion_list:
+    #         value = self.item.get_value(preferences, criterion_name_1)
+    #         if value == Value.VERY_BAD or value == Value.BAD:
+    #             self.add_premiss_couple_values(criterion_name_1, value)
+    #         for criterion_name_2 in criterion_list:
+    #             if criterion_name_2 != criterion_name_1 and preferences.is_preferred_criterion(criterion_name_1, criterion_name_2):
+    #                 self.add_premiss_comparison(criterion_name_1, criterion_name_2)
+    #     list_of_attacking_proposal = self.comparison_list + self.couple_values_list
+    #     return list_of_attacking_proposal  
 
     def support_proposal(self, preferences):
         """
@@ -91,20 +91,20 @@ class Argument :
             argument = str(best_criterion_name) + ' > ' + str(worst_criterion_name)
         return argument
 
-    def get_list_of_counter_arguments(self, preferences, argument):
-        list_of_attacking_arguments = self.List_attacking_proposal(preferences)
-        print(list_of_attacking_arguments)
-        list_of_counter_arguments = list()
-        for attacking_argument in list_of_attacking_arguments:
-            if attacking_argument.type == 'CoupleValue':
-                print(attacking_argument.criterion_name, attacking_argument.value)
-                if str(attacking_argument.criterion_name) in argument:
-                    list_of_counter_arguments.append(attacking_argument)
-            else:
-                print(attacking_argument.best_criterion_name, attacking_argument.worst_criterion_name)
-                if str(attacking_argument.worst_criterion_name) in argument:
-                    list_of_counter_arguments.append(attacking_argument)
-        return list_of_counter_arguments
+    # def get_list_of_counter_arguments(self, preferences, argument):
+    #     list_of_attacking_arguments = self.List_attacking_proposal(preferences)
+    #     print(list_of_attacking_arguments)
+    #     list_of_counter_arguments = list()
+    #     for attacking_argument in list_of_attacking_arguments:
+    #         if attacking_argument.type == 'CoupleValue':
+    #             print(attacking_argument.criterion_name, attacking_argument.value)
+    #             if str(attacking_argument.criterion_name) in argument:
+    #                 list_of_counter_arguments.append(attacking_argument)
+    #         else:
+    #             print(attacking_argument.best_criterion_name, attacking_argument.worst_criterion_name)
+    #             if str(attacking_argument.worst_criterion_name) in argument:
+    #                 list_of_counter_arguments.append(attacking_argument)
+    #     return list_of_counter_arguments
 
     # def get_counter_argument(self, preferences, argument):
     #     list_of_counter_arguments = self.get_list_of_counter_arguments(preferences, argument)
@@ -132,16 +132,16 @@ class Argument :
                     possible_counter_argument = str(criterion_name_2) + ' = ' + str(self.item.get_value(preferences, criterion_name_2)) + ' and ' + str(criterion_name_2) + ' > ' + str(criterion_name)
                     if (self.item, possible_counter_argument) not in list_agent_arg:
                         possible_counter_arguments.append((self.item,possible_counter_argument))
-            if argument.value.value > agent_value.value and agent_value.value < 3:
-                possible_counter_argument = str(criterion_name) + ' = ' + str(agent_value)
-                if (self.item, possible_counter_argument) not in list_agent_arg:
-                    possible_counter_arguments.append((self.item, possible_counter_argument))
             for engine in engine_list:
                 engine_value = engine.get_value(preferences, criterion_name)
                 if preferences.is_preferred_item(engine, self.item) and preferences.is_item_among_top_10_percent(engine,engine_list) and engine_value.value > agent_value.value:
                     possible_counter_argument = str(criterion_name) + ' = ' + str(agent_value)
                     if (engine,possible_counter_argument) not in list_agent_arg:
                         possible_counter_arguments.append((engine,possible_counter_argument))
+            if argument.value.value > agent_value.value and agent_value.value < 3:
+                possible_counter_argument = str(criterion_name) + ' = ' + str(agent_value)
+                if (self.item, possible_counter_argument) not in list_agent_arg:
+                    possible_counter_arguments.append((self.item, possible_counter_argument))
             #if argument.value.value =< agent_value.value:
             
         else:
@@ -156,23 +156,23 @@ class Argument :
             agent_value = self.item.get_value(preferences, criterion_name)
             criterion_list = preferences.get_criterion_name_list()
             for criterion_name_2 in criterion_list:
-                if preferences.is_preferred_criterion(criterion_name_2, criterion_name) and criterion_name_2 != criterion_name and self.item.get_value(preferences, criterion_name_2).value > agent_value.value :
+                if preferences.is_preferred_criterion(criterion_name_2, criterion_name) and criterion_name_2 != criterion_name and self.item.get_value(preferences, criterion_name_2).value > agent_value.value and self.item.get_value(preferences, criterion_name_2).value > 2:
                     self.add_premiss_couple_values(criterion_name_2, self.item.get_value(preferences, criterion_name_2))
                     self.add_premiss_comparison(criterion_name_2, criterion_name)
                     possible_pro_argument = str(criterion_name_2) + ' = ' + str(self.item.get_value(preferences, criterion_name_2)) + ' and ' + str(criterion_name_2) + ' > ' + str(criterion_name)
                     if (self.item,possible_pro_argument) not in list_agent_arguments:
                         possible_pro_arguments.append((self.item,possible_pro_argument))
-        
-            if argument.value.value < agent_value.value and agent_value.value > 1:
-                possible_pro_argument = str(criterion_name) + ' = ' + str(agent_value)
-                if (self.item, possible_pro_argument) not in list_agent_arguments:
-                    possible_pro_arguments.append((self.item, possible_pro_argument))
             for engine in engine_list:
                 engine_value = engine.get_value(preferences, criterion_name)
                 if preferences.is_preferred_item(engine, self.item) and preferences.is_item_among_top_10_percent(engine,engine_list) and engine_value.value > agent_value.value:
                     possible_pro_argument = str(criterion_name) + ' = ' + str(agent_value)
                     if (engine, possible_pro_argument) not in list_agent_arguments:
                         possible_pro_arguments.append((engine,possible_pro_argument))
+            if argument.value.value < agent_value.value and agent_value.value > 1:
+                possible_pro_argument = str(criterion_name) + ' = ' + str(agent_value)
+                if (self.item, possible_pro_argument) not in list_agent_arguments:
+                    possible_pro_arguments.append((self.item, possible_pro_argument))
+            
         else:
             best_criterion_name = argument.best_criterion_name
             worst_criterion_name = argument.worst_criterion_name
