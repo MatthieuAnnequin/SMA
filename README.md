@@ -1,13 +1,23 @@
 # Dialogue basé sur l'argumentation pour le choix d'un moteur de voiture
 
-## Fonctionnement du git
+### Le projet
 
+### Introduction
+Ce projet s'inscrit dans le cadre du cours de système multi-agent du parcours de 3A de CentraleSupélec, mention intelligence artificielle.
+
+### Auteurs
+- **Valentin Odde** - *AI master student* - [valentinodde](https://github.com/valentinodde)
+- **Matthieu Annequin** - *AI master student* - [matthieuannequin](https://github.com/matthieuannequin)
+
+## Fonctionnement du git
 ### Fonctionnement du projet
 
-Pour exécuter le projet, nous vous invitons à cloner le répartoire avec l'instruction suivante : 
+Pour exécuter le projet, nous vous invitons à cloner le répertoire avec l'instruction suivante : 
 ```sh
 git clone https://github.com/MatthieuAnnequin/SMA.git
 ```
+
+Pour lancer l'argumentation, nous vous invitons à vous reporter à la section pw_argumentation.
 
 ### Organisation du git
 
