@@ -111,8 +111,10 @@ class ArgumentAgent(CommunicatingAgent):
                     print(self.unique_id, "pro")
                     possible_motors = [engine['item'] for engine in self.model.engine_list if not(engine['item'].get_name() in self.already_discussed_motor)]                            
                     argumentation = Argument(False, motor_item)
-                    new_item, pro_argument = argumentation.get_pro_argument(self.get_preferences(), argument, possible_motors, self.list_agent_arguments)
-                    if new_item.get_name() != motor_item.get_name():
+                    new_item, pro_argument, accept = argumentation.get_pro_argument(self.get_preferences(), argument, possible_motors, self.list_agent_arguments)
+                    if accept:
+                        self.send_message(Message(message.get_dest(),message.get_exp(),MessagePerformative.ACCEPT, new_item.get_name()))
+                    elif new_item.get_name() != motor_item.get_name():
                         self.send_message(Message(message.get_dest(),message.get_exp(), MessagePerformative.PROPOSE, new_item.get_name()))
                     else:
                         self.send_message(Message(message.get_dest(),message.get_exp(), MessagePerformative.ARGUE, new_item.get_name() + ":" + str(pro_argument) ))
