@@ -109,7 +109,7 @@ class ArgumentAgent(CommunicatingAgent):
                 motor_item, argument = self.arguement_parser(message.get_content())
                 if self.current_motor_proposal_name == motor_item.get_name():
                     print(self.unique_id, "pro")
-                    possible_motors = [engine['item'] for engine in self.model.engine_list if not(engine.get_name() in self.already_discussed_motor)]                            
+                    possible_motors = [engine['item'] for engine in self.model.engine_list if not(engine['item'].get_name() in self.already_discussed_motor)]                            
                     argumentation = Argument(False, motor_item)
                     new_item, pro_argument = argumentation.get_pro_argument(self.get_preferences(), argument, possible_motors, self.list_agent_arguments)
                     if new_item.get_name() != motor_item.get_name():
@@ -120,7 +120,7 @@ class ArgumentAgent(CommunicatingAgent):
 
                 else:    
                     print(self.unique_id, "counter")   
-                    possible_motors = [engine['item'] for engine in self.model.engine_list if not(engine.get_name() in self.already_discussed_motor)]                            
+                    possible_motors = [engine['item'] for engine in self.model.engine_list if not(engine['item'].get_name() in self.already_discussed_motor)]                            
                     argumentation = Argument(False, motor_item)
                     new_item, counter_argument = argumentation.get_counter_argument(self.get_preferences(), argument, possible_motors, self.list_agent_arguments)
                     if new_item.get_name() != motor_item.get_name():
