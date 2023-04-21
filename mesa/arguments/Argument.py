@@ -138,7 +138,7 @@ class Argument :
             if argument.value.value < agent_value.value:
                 criterion_list = preferences.get_criterion_name_list()
                 for criterion_name_2 in criterion_list:
-                    print(criterion_name_2, preferences.is_preferred_criterion(criterion_name_2, criterion_name))
+                    print(criterion_name_2, preferences.is_preferred_criterion(criterion_name_2, criterion_name),self.item.get_value(preferences, criterion_name_2).value < agent_value.value)
                     if preferences.is_preferred_criterion(criterion_name_2, criterion_name) and criterion_name_2 != criterion_name and self.item.get_value(preferences, criterion_name_2).value < agent_value.value :
                         self.add_premiss_couple_values(criterion_name_2, self.item.get_value(preferences, criterion_name_2))
                         self.add_premiss_comparison(criterion_name_2, criterion_name)
