@@ -22,8 +22,6 @@ class Argument :
         """
         self.boolean_decision = boolean_decision
         self.item = item
-        self.comparison_list = list()
-        self.couple_values_list = list()
 
     def add_premiss_comparison(self, criterion_name_1, criterion_name_2):
         """ Adds a premiss comparison in the comparison list .
@@ -55,7 +53,7 @@ class Argument :
                 if criterion_name_2 != criterion_name_1 and criterion_name_1 == preferences.is_preferred_criterion(criterion_name_1, criterion_name_2):
                     self.add_premiss_comparison(criterion_name_1, criterion_name_2)
                     comparison_list.append(Comparison(criterion_name_1, criterion_name_2))
-        list_of_supporting_proposal = self.comparison_list + self.couple_values_list
+        list_of_supporting_proposal = comparison_list + couple_values_list
         return list_of_supporting_proposal
         
     def List_attacking_proposal(self, preferences) :
