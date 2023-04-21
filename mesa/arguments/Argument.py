@@ -124,28 +124,26 @@ class Argument :
         if argument.type == 'CoupleValue':
             criterion_name = argument.criterion_name
             agent_value = self.item.get_value(preferences, criterion_name)
+            print(agent_value)
             if argument.value.value > agent_value.value and agent_value.value < 3:
                 possible_counter_argument = str(criterion_name) + ' = ' + str(agent_value)
                 if (self.item, possible_counter_argument) not in list_agent_arg:
-                    print('here')
                     possible_counter_arguments.append((self.item, possible_counter_argument))
             for engine in engine_list:
                 engine_value = engine.get_value(preferences, criterion_name)
                 if preferences.is_preferred_item(engine, self.item) and preferences.is_item_among_top_10_percent(engine,engine_list) and engine_value.value > agent_value.value:
                     possible_counter_argument = str(criterion_name) + ' = ' + str(agent_value)
                     if (engine,possible_counter_argument) not in list_agent_arg:
-                        print('here')
-
                         possible_counter_arguments.append((engine,possible_counter_argument))
             if argument.value.value < agent_value.value:
                 criterion_list = preferences.get_criterion_name_list()
                 for criterion_name_2 in criterion_list:
+                    print(criterion_name_2, preferences.is_preferred_criterion(criterion_name_2, criterion_name))
                     if preferences.is_preferred_criterion(criterion_name_2, criterion_name) and criterion_name_2 != criterion_name and self.item.get_value(preferences, criterion_name_2).value < agent_value.value :
                         self.add_premiss_couple_values(criterion_name_2, self.item.get_value(preferences, criterion_name_2))
                         self.add_premiss_comparison(criterion_name_2, criterion_name)
                         possible_counter_argument = str(criterion_name_2) + ' = ' + str(self.item.get_value(preferences, criterion_name_2)) + ' and ' + str(criterion_name_2) + ' > ' + str(criterion_name)
                         if (self.item, possible_counter_argument) not in list_agent_arg:
-                            print('here')
                             possible_counter_arguments.append((self.item,possible_counter_argument))
         else:
             best_criterion_name = argument.best_criterion_name
