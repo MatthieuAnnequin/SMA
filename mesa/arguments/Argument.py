@@ -28,13 +28,13 @@ class Argument :
     def add_premiss_comparison(self, criterion_name_1, criterion_name_2):
         """ Adds a premiss comparison in the comparison list .
         """
-        self.comparison_list.append(Comparison(criterion_name_1, criterion_name_2))
+        Comparison(criterion_name_1, criterion_name_2)
         
     
     def add_premiss_couple_values(self, criterion_name, value):
         """ Add a premiss couple values in the couple values list .
         """
-        self.couple_values_list.append(CoupleValue(criterion_name, value))
+        CoupleValue(criterion_name, value)
         
 
     def List_supporting_proposal(self, preferences) :
@@ -44,13 +44,17 @@ class Argument :
         based on agent’s preferences)
         """
         criterion_list = preferences.get_criterion_name_list()
+        couple_values_list = list()
+        comparison_list = list()
         for criterion_name_1 in criterion_list:
             value = self.item.get_value(preferences, criterion_name_1)
             if value == Value.VERY_GOOD or value == Value.GOOD:
                 self.add_premiss_couple_values(criterion_name_1, value)
+                couple_values_list.append(CoupleValue(criterion_name_1, value))
             for criterion_name_2 in criterion_list:
                 if criterion_name_2 != criterion_name_1 and criterion_name_1 == preferences.is_preferred_criterion(criterion_name_1, criterion_name_2):
                     self.add_premiss_comparison(criterion_name_1, criterion_name_2)
+                    comparison_list.append(Comparison(criterion_name_1, criterion_name_2))
         list_of_supporting_proposal = self.comparison_list + self.couple_values_list
         return list_of_supporting_proposal
         
@@ -122,24 +126,45 @@ class Argument :
         if argument.type == 'CoupleValue':
             criterion_name = argument.criterion_name
             agent_value = self.item.get_value(preferences, criterion_name)
-            if argument.value.value > agent_value.value:
+            if argument.value.value > agent_value.value and agent_value.value < 3:
                 possible_counter_arguments.append((self.item, str(criterion_name) + ' = ' + str(agent_value)))
             for engine in engine_list:
                 engine_value = engine.get_value(preferences, criterion_name)
                 if preferences.is_preferred_item(engine, self.item) and preferences.is_item_among_top_10_percent(engine,engine_list) and engine_value.value > agent_value.value:
                     possible_counter_arguments.append((engine,str(criterion_name) + ' = ' + str(agent_value)))
-            if argument.value.value <= agent_value.value:
+            if argument.value.value < agent_value.value:
                 criterion_list = preferences.get_criterion_name_list()
                 for criterion_name_2 in criterion_list:
                     if preferences.is_preferred_criterion(criterion_name_2, criterion_name) and criterion_name_2 != criterion_name and self.item.get_value(preferences, criterion_name_2).value < agent_value.value :
-                    #    self.add_premiss_couple_values(criterion_name_2, self.item.get_value(preferences, criterion_name_2))
-                    #    self.add_premiss_comparison(criterion_name_2, criterion_name)
+                        self.add_premiss_couple_values(criterion_name_2, self.item.get_value(preferences, criterion_name_2))
+                        self.add_premiss_comparison(criterion_name_2, criterion_name)
                         argument = str(criterion_name_2) + ' = ' + str(self.item.get_value(preferences, criterion_name_2)) + ' and ' + str(criterion_name_2) + ' > ' + str(criterion_name)
                         possible_counter_arguments.append((self.item,argument))
- 
-
-
         else:
             best_criterion_name = argument.best_criterion_name
             worst_criterion_name = argument.worst_criterion_name
         return random.choice(possible_counter_arguments)            
+    
+    def get_pro_argument(self, preferences, argument, engine_list):
+        possible_pro_arguments = list()
+        if argument.type == 'CoupleValue':
+            criterion_name = argument.criterion_name
+            agent_value = self.item.get_value(preferences, criterion_name)
+            if argument.value.value < agent_value.value and agent_value.value > 1:
+                possible_pro_arguments.append((self.item, str(criterion_name) + ' = ' + str(agent_value)))
+            for engine in engine_list:
+                engine_value = engine.get_value(preferences, criterion_name)
+                if preferences.is_preferred_item(engine, self.item) and preferences.is_item_among_top_10_percent(engine,engine_list) and engine_value.value > agent_value.value:
+                    possible_pro_arguments.append((engine,str(criterion_name) + ' = ' + str(agent_value)))
+            if argument.value.value < agent_value.value:
+                criterion_list = preferences.get_criterion_name_list()
+                for criterion_name_2 in criterion_list:
+                    if preferences.is_preferred_criterion(criterion_name_2, criterion_name) and criterion_name_2 != criterion_name and self.item.get_value(preferences, criterion_name_2).value < agent_value.value :
+                        self.add_premiss_couple_values(criterion_name_2, self.item.get_value(preferences, criterion_name_2))
+                        self.add_premiss_comparison(criterion_name_2, criterion_name)
+                        argument = str(criterion_name_2) + ' = ' + str(self.item.get_value(preferences, criterion_name_2)) + ' and ' + str(criterion_name_2) + ' > ' + str(criterion_name)
+                        possible_pro_arguments.append((self.item,argument))
+        else:
+            best_criterion_name = argument.best_criterion_name
+            worst_criterion_name = argument.worst_criterion_name
+        return random.choice(possible_pro_arguments)            
