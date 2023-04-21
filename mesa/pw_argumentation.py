@@ -52,6 +52,8 @@ class ArgumentAgent(CommunicatingAgent):
                      '.VERY_BAD' : Value.VERY_BAD}
         
         self.list_agent_arguments = []
+        self.already_discussed_motor = []
+        
        
 
     def step(self):
@@ -61,6 +63,7 @@ class ArgumentAgent(CommunicatingAgent):
         if self.first_step and self.get_name() == "agent1":
             agent_y = random.choice(self.list_other_agent)
             self.send_message(Message(self.get_name(), agent_y, MessagePerformative.PROPOSE, self.best_motor.get_name()))
+            self.already_discussed_motor.append(self.best_motor.get_name())
             self.current_motor_proposal_name = self.best_motor.get_name()
             print(self.get_name() + " propose " + str(self.best_motor.get_name()) + " à " + agent_y)
             self.first_step = False
@@ -70,6 +73,7 @@ class ArgumentAgent(CommunicatingAgent):
             print(message)
             if message.get_performative() == MessagePerformative.PROPOSE:
                 motor_name = message.get_content()
+                self.already_discussed_motor.append(motor_name)
                 top_10_percent_list_name = [item.get_name() for item in self.top_10_percent_list]
                 if motor_name in top_10_percent_list_name:
                     self.send_message(Message(message.get_dest(),message.get_exp(),MessagePerformative.ACCEPT, motor_name))
@@ -105,8 +109,9 @@ class ArgumentAgent(CommunicatingAgent):
                 motor_item, argument = self.arguement_parser(message.get_content())
                 if self.current_motor_proposal_name == motor_item.get_name():
                     print(self.unique_id, "pro")
+                    possible_motors = [engine['item'] for engine in self.model.engine_list if not(engine.get_name() in self.already_discussed_motor)]                            
                     argumentation = Argument(False, motor_item)
-                    new_item, pro_argument = argumentation.get_pro_argument(self.get_preferences(), argument, [engine['item'] for engine in self.model.engine_list], self.list_agent_arguments)
+                    new_item, pro_argument = argumentation.get_pro_argument(self.get_preferences(), argument, possible_motors, self.list_agent_arguments)
                     if new_item.get_name() != motor_item.get_name():
                         self.send_message(Message(message.get_dest(),message.get_exp(), MessagePerformative.PROPOSE, new_item.get_name()))
                     else:
@@ -114,9 +119,10 @@ class ArgumentAgent(CommunicatingAgent):
                         self.list_agent_arguments.append((new_item, pro_argument))
 
                 else:    
-                    print(self.unique_id, "counter")                                  
+                    print(self.unique_id, "counter")   
+                    possible_motors = [engine['item'] for engine in self.model.engine_list if not(engine.get_name() in self.already_discussed_motor)]                            
                     argumentation = Argument(False, motor_item)
-                    new_item, counter_argument = argumentation.get_counter_argument(self.get_preferences(), argument, [engine['item'] for engine in self.model.engine_list], self.list_agent_arguments)
+                    new_item, counter_argument = argumentation.get_counter_argument(self.get_preferences(), argument, possible_motors, self.list_agent_arguments)
                     if new_item.get_name() != motor_item.get_name():
                         self.send_message(Message(message.get_dest(),message.get_exp(), MessagePerformative.PROPOSE, new_item.get_name()))
                     else:
@@ -150,8 +156,10 @@ class ArgumentAgent(CommunicatingAgent):
         self.__preferences = Preferences()
 
         # Initialize citerion preferences
-        random.shuffle(self.model.criterion_list)
-        self.__preferences.set_criterion_name_list(self.model.criterion_list)
+        self.agent_criterion_list = self.model.criterion_list.copy()
+        random.shuffle(self.agent_criterion_list)
+        print(self.unique_id, self.agent_criterion_list)
+        self.__preferences.set_criterion_name_list(self.agent_criterion_list)
 
         # Initialize agent scales by criterion
         for engine in self.model.engine_list:
@@ -251,7 +259,7 @@ class ArgumentModel(Model):
                                         CriterionName.NOISE]
         
         # generate list of engine
-        self.engine_list = motor_generator(2, self.criterion_list )
+        self.engine_list = motor_generator(4, self.criterion_list )
 
         # define agents, create them and add them to the model
         agents_list = ['agent1', 'agent2']
