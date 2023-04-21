@@ -16,6 +16,7 @@ Sur les autres dossiers nous n'avons pas changé la structure.
 #### Fichier pw_argumentation.py
 
 ### Résultats
+Les résultats suivants sont pour un cas à 3 moteurs.
 
-
-https://github.com/MatthieuAnnequin/SMA/issues/1#issue-1678222148
+Cas où le moteur favori de l'agent 1 est dans les 10% préféré de l'agent 2 :  
+![WhatsApp Image 2023-04-21 à 11 35 29](https://user-images.githubusercontent.com/82157628/233603790-84bc439b-997d-4082-a38b-a438cd446045.jpg)
