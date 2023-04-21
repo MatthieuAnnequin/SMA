@@ -4,6 +4,11 @@
 
 ### Fonctionnement du projet
 
+Pour exécuter le projet, nous vous invitons à cloner le répartoire avec l'instruction suivante : 
+```sh
+git clone https://github.com/MatthieuAnnequin/SMA.git
+```
+
 ### Organisation du git
 
 #### Dossier arguments
@@ -22,7 +27,26 @@ Sur les autres dossiers nous n'avons pas changé la structure.
 
 #### Fichier pw_argumentation.py
 
-### Résultats
+C’est le fichier d’execution de notre projet, c’est à cet endroit que l’on a créé notre classe **`ArgumentAgent`** qui hérite de  **`Communicating Agent`**. 
+Il contient également la classe **`ArgumentModel`** qui hérite directement de  la classe **`Model`** de la bibliothèque *mesa*. 
+
+Pour l'éxécuter, nous pouvons taper l'instruction suivante dans la console en nous plaçant dan le dossier **`SMA`** afin de lancer une argumentation entre nos 2 agents.
+```sh
+python -m pw_argumentation
+```
+
+Cela va exécuter le code suivant qui permet de lancer une simulation sur 20 étapes avec par défaut 3 moteurs différents, ce nombre peut être ajusté afin d'avoir un plus grand nombre de moteur.
+```sh
+def launch_step(n=20):
+    print('Launch ArgumentModel')
+    argument_model = ArgumentModel()
+    step = 0
+    while step < n:
+        argument_model.step()
+        step += 1
+```
+
+## Résultats
 Les résultats suivants sont pour un cas à 3 moteurs.
 
 Cas où le moteur favori de l'agent 1 est dans les 10% préféré de l'agent 2 :  
